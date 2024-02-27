@@ -82,16 +82,23 @@ class UsersController extends Controller
             'data' => null
         ];
     }
-    public function categories_index($user_id)
+    public function categories_index(string $user_id)
     {
-        $user = User::findOrFail($user_id);
-        $categories = TransactionCategory::where('user_id', $user->id)->latest()->paginate(10);
+        $categories = TransactionCategory::where('user_id', $user_id)->latest()->paginate(10);
         return [
             'status' => 1,
             'data' => $categories
         ];
     }
-    public function categories_store($user_id, Request $request)
+    public function categories_show(string $user_id, string $id)
+    {
+        $category = TransactionCategory::findOrFail($id);
+        return [
+            'status' => 1,
+            'data' => $category
+        ];
+    }
+    public function categories_store(string $user_id, Request $request)
     {
         $request->validate([
             'name' => 'required|string'
@@ -108,7 +115,7 @@ class UsersController extends Controller
             'data' => $category
         ];
     }
-    public function categories_update($user_id, $id, Request $request)
+    public function categories_update(string $user_id, string $id, Request $request)
     {
         $transactionCartegory = TransactionCategory::findOrFail($id);
         $request->validate([
@@ -124,7 +131,7 @@ class UsersController extends Controller
             'data' => $transactionCartegory
         ];
     }
-    public function categories_destroy($user_id, $id)
+    public function categories_destroy(string $user_id, string $id)
     {
         $transactionCartegory = TransactionCategory::findOrFail($id);
         $transactionCartegory->delete();
@@ -133,7 +140,7 @@ class UsersController extends Controller
             'data' => null
         ];
     }
-    public function transactions_index($user_id, $id)
+    public function transactions_index(string $user_id, string $id)
     {
         $transactions = Transaction::where('category_id', $id)->latest()->paginate(10);
         return [
@@ -141,7 +148,7 @@ class UsersController extends Controller
             'data' => $transactions
         ];
     }
-    public function transactions_show($user_id, $category_id, $id)
+    public function transactions_show(string $user_id, string $category_id, string $id)
     {
         $transaction = TransactionCategory::findOrFail($id);
         return [
@@ -171,7 +178,7 @@ class UsersController extends Controller
             'data' => $transaction
         ];
     }
-    public function transactions_update($user_id, $category_id, $id, Request $request)
+    public function transactions_update(string $user_id, string $category_id, string $id, Request $request)
     {
         $request->validate([
             'name' => 'required|string',
@@ -191,7 +198,7 @@ class UsersController extends Controller
             'data' => $transaction
         ];
     }
-    public function transactions_destroy($user_id, $category_id, $id)
+    public function transactions_destroy(string $user_id, string $category_id, $id)
     {
         $transaction = Transaction::findOrFail($id);
         $transaction->delete();

@@ -1,14 +1,10 @@
 <?php
 //Class "App\Enums\TransactionTypeRequestStatus" not found
-use App\Enums\TransactionTypeRequestStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
@@ -26,7 +22,7 @@ return new class extends Migration {
             $table->uuid('user_id')->index();
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
 
         Schema::create('transactions', function (Blueprint $table) {
@@ -38,7 +34,7 @@ return new class extends Migration {
             $table->uuid('category_id')->index();
             $table->timestamps();
 
-            $table->foreign('category_id')->references('id')->on('transaction_categories');
+            $table->foreign('category_id')->references('id')->on('transaction_categories')->onDelete('cascade');
         });
     }
     /**

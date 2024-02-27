@@ -2,63 +2,49 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 
 class TransactionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
+        $query = Transaction::query();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+        if ($request->has('transaction_name')) {
+            $query->where('name', 'like', '%' . $request->input('transaction_name') . '%');
+        }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        if ($request->has('category_name')) {
+            $query->whereHas('category', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->input('category_name') . '%');
+            });
+        }
 
-    /**
-     * Display the specified resource.
-     */
+        if ($request->has('category_id')) {
+            $query->where('category_id', $request->input('category_id'));
+        }
+
+        if ($request->has('type')) {
+            $query->where('type', $request->input('type'));
+        }
+
+        $query->with(['category' => function ($query) {
+            $query->select('id','name');
+        }]);
+
+        $transactions = $query->get();
+        return [
+            "status" => 1,
+            "data" => $transactions
+        ];
+    }
     public function show(string $id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $transaction = Transaction::findOrFail($id)->with('category');
+        return [
+            "status" => 1,
+            "data" => $transaction
+        ];
     }
 }

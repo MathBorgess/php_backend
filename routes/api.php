@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\TransactionCategoryController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Http\Request;
@@ -13,6 +12,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::resource('users', UsersController::class);
 
 Route::get('users/{user_id}/categories', [UsersController::class, 'categories_index']);
+Route::get('users/{user_id}/categories/{id}', [UsersController::class, 'categories_show']);
 Route::post('users/{user_id}/categories', [UsersController::class, 'categories_store']);
 Route::put('users/{user_id}/categories/{id}', [UsersController::class, 'categories_update']);
 Route::delete('users/{user_id}/categories/{id}', [UsersController::class, 'categories_destroy']);
@@ -23,5 +23,4 @@ Route::post('users/{user_id}/categories/{category_id}/transactions', [UsersContr
 Route::put('users/{user_id}/categories/{category_id}/transactions/{id}', [UsersController::class, 'transactions_update']);
 Route::delete('users/{user_id}/categories/{category_id}/transactions/{id}', [UsersController::class, 'transactions_destroy']);
 
-Route::resource('categories', TransactionCategoryController::class);
 Route::resource('transactions', TransactionController::class);
