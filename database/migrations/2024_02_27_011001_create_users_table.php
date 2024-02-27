@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\TransactionTypeRequestStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -30,6 +31,7 @@ return new class extends Migration {
 
         Schema::create('transactions', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->enum('type', TransactionTypeRequestStatus::values())->change();
             $table->string('name');
             $table->integer('value');
             $table->uuid('category_id')->index();

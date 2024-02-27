@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\TransactionTypeRequestStatus;
+use App\Models\Transaction;
 use App\Models\TransactionCategory;
 use App\Models\User;
+use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 
 class UsersController extends Controller
@@ -128,6 +131,72 @@ class UsersController extends Controller
     {
         $transactionCartegory = TransactionCategory::findOrFail($id);
         $transactionCartegory->delete();
+        return [
+            'status' => 1,
+            'data' => null
+        ];
+    }
+    public function transactions_index($user_id, $id)
+    {
+        $transactions = TransactionCategory::findOrFail($id)->transactions()->latest()->paginate(10);
+        return [
+            'status' => 1,
+            'data' => $transactions
+        ];
+    }
+    public function transactions_show($user_id, $category_id, $id)
+    {
+        $transaction = TransactionCategory::findOrFail($id);
+        return [
+            'status' => 1,
+            'data' => $transaction
+        ];
+    }
+    public function transactions_store($user_id, $category_id, Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'value' => 'required|numeric',
+            'type' => Rule::in(TransactionTypeRequestStatus::values())
+        ]);
+        $category = TransactionCategory::findOrFail($category_id);
+        $transaction = Transaction::create([
+            'name' => $request->name,
+            'value' => $request->value,
+            'category_id' => $category_id,
+            'type' => $request->type
+        ]);
+        $transaction->category()->associate($category);
+        $transaction->save();
+        return [
+            'status' => 1,
+            'data' => $transaction
+        ];
+    }
+    public function transactions_update($user_id, $category_id, $id, Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'value' => 'required|numeric',
+            'type' => Rule::in(TransactionTypeRequestStatus::values()),
+            'category_id' => 'required|exists:transaction_categories,id'
+        ]);
+        $transaction = Transaction::findOrFail($id);
+        $transaction->update([
+            'name' => $request->name,
+            'value' => $request->value,
+            'category_id' => $request->category_id,
+            'type' => $request->type
+        ]);
+        return [
+            'status' => 1,
+            'data' => $transaction
+        ];
+    }
+    public function transactions_destroy($user_id, $category_id, $id)
+    {
+        $transaction = Transaction::findOrFail($id);
+        $transaction->delete();
         return [
             'status' => 1,
             'data' => null

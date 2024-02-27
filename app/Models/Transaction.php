@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\TransactionTypeRequestStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Notifications\Notifiable;
@@ -19,7 +20,13 @@ class Transaction extends Model
      */
     protected $fillable = [
         'name',
-        'value'
+        'value',
+        'type',
+    ];
+
+    protected $casts = [
+        'value' => 'integer',
+        'type' => TransactionTypeRequestStatus::class,
     ];
 
     public function category(): BelongsTo
