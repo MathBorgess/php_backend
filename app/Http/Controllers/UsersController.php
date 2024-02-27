@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TransactionCategory;
 use App\Models\User;
 use Illuminate\Http\Request;
 
 class UsersController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $users = User::latest()->paginate(10);
@@ -19,17 +17,11 @@ class UsersController extends Controller
         ];
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -50,9 +42,6 @@ class UsersController extends Controller
         ];
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(User $user)
     {
         return [
@@ -60,20 +49,9 @@ class UsersController extends Controller
             'data' => $user
         ];
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(User $user)
+    public function update(Request $request, $id)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, User $user)
-    {
+        $user = User::findOrFail($id);
         $request->validate([
             'fullname' => 'required|string',
             'email' => 'required|email|unique:users,email,' . $user->id,
@@ -95,9 +73,61 @@ class UsersController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy($id)
     {
+        $user = User::findOrFail($id);
         $user->delete();
+        return [
+            'status' => 1,
+            'data' => null
+        ];
+    }
+    public function categories_index($user_id)
+    {
+        $user = User::findOrFail($user_id);
+        $categories = $user->categories()->latest()->paginate(10);
+        return [
+            'status' => 1,
+            'data' => $categories
+        ];
+    }
+    public function categories_store($user_id, Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string'
+        ]);
+        $user = User::findOrFail($user_id);
+        $category = TransactionCategory::create([
+            'name' => $request->name,
+            'user_id' => $user_id
+        ]);
+        $category->user()->associate($user);
+        $category->save();
+        return [
+            'status' => 1,
+            'data' => $category
+        ];
+    }
+    public function categories_update($user_id, $id, Request $request)
+    {
+        $transactionCartegory = TransactionCategory::findOrFail($id);
+        $request->validate([
+            'name' => 'required|string',
+            'user_id' => 'required|exists:users,id'
+        ]);
+        $transactionCartegory->update([
+            'name' => $request->name,
+            'user_id' => $request->user_id
+        ]);
+        return [
+            'status' => 1,
+            'data' => $transactionCartegory
+        ];
+    }
+    public function categories_destroy($user_id, $id)
+    {
+        $transactionCartegory = TransactionCategory::findOrFail($id);
+        $transactionCartegory->delete();
         return [
             'status' => 1,
             'data' => null

@@ -18,13 +18,33 @@ return new class extends Migration {
             $table->string('cpf')->unique();
             $table->timestamps();
         });
-    }
 
+        Schema::create('transaction_categories', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('name');
+            $table->uuid('user_id')->index();
+            $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users');
+        });
+
+        Schema::create('transactions', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('name');
+            $table->integer('value');
+            $table->uuid('category_id')->index();
+            $table->timestamps();
+
+            $table->foreign('category_id')->references('id')->on('transaction_categories');
+        });
+    }
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
         Schema::dropIfExists('users');
+        Schema::dropIfExists('transaction_categories');
+        Schema::dropIfExists('transactions');
     }
 };
