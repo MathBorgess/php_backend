@@ -8,6 +8,39 @@ use Illuminate\Http\Request;
 
 class UsersController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/users",
+     *    tags={"Users"},
+     *    summary="List all users",
+     *   @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Include additional information (e.g., profile)",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     description="Returns a list of all users",
+     *  @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="id", type="integer"),
+     *             @OA\Property(property="fullname", type="string"),
+     *             @OA\Property(property="cpf", type="string"),
+     *             @OA\Property(property="email", type="string"),
+     *             @OA\Property(property="created_at", type="string", format="date-time"),
+     *             @OA\Property(property="updated_at", type="string", format="date-time")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User not found"
+     *     )
+     *   )
+     * @return User[]
+     */
     public function index()
     {
         $users = User::latest()->paginate(10);
@@ -15,11 +48,6 @@ class UsersController extends Controller
             "status" => 1,
             "data" => $users
         ];
-    }
-
-    public function create()
-    {
-        //
     }
 
     public function store(Request $request)
