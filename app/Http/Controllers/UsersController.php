@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\TransactionTypeRequestStatus;
-use App\Models\Transaction;
-use App\Models\TransactionCategory;
-use App\Models\User;
+use App\Models\{TransactionCategory, Transaction, User};
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 
@@ -88,7 +85,7 @@ class UsersController extends Controller
     public function categories_index($user_id)
     {
         $user = User::findOrFail($user_id);
-        $categories = $user->categories()->latest()->paginate(10);
+        $categories = TransactionCategory::where('user_id', $user->id)->latest()->paginate(10);
         return [
             'status' => 1,
             'data' => $categories
@@ -138,7 +135,7 @@ class UsersController extends Controller
     }
     public function transactions_index($user_id, $id)
     {
-        $transactions = TransactionCategory::findOrFail($id)->transactions()->latest()->paginate(10);
+        $transactions = Transaction::where('category_id', $id)->latest()->paginate(10);
         return [
             'status' => 1,
             'data' => $transactions
@@ -152,18 +149,19 @@ class UsersController extends Controller
             'data' => $transaction
         ];
     }
-    public function transactions_store($user_id, $category_id, Request $request)
+    public function transactions_store(string $user_id, string $category_id, Request $request)
     {
         $request->validate([
             'name' => 'required|string',
             'value' => 'required|numeric',
-            'type' => Rule::in(TransactionTypeRequestStatus::values())
+            'type' => Rule::in(Transaction::transactionTypes())
         ]);
+
         $category = TransactionCategory::findOrFail($category_id);
         $transaction = Transaction::create([
             'name' => $request->name,
             'value' => $request->value,
-            'category_id' => $category_id,
+            'category_id' => $category->id,
             'type' => $request->type
         ]);
         $transaction->category()->associate($category);
@@ -178,7 +176,7 @@ class UsersController extends Controller
         $request->validate([
             'name' => 'required|string',
             'value' => 'required|numeric',
-            'type' => Rule::in(TransactionTypeRequestStatus::values()),
+            'type' => Rule::in(Transaction::transactionTypes()),
             'category_id' => 'required|exists:transaction_categories,id'
         ]);
         $transaction = Transaction::findOrFail($id);

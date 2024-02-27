@@ -7,12 +7,9 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
-//Error: Class &quot;App\Models\Model&quot; not found in file /Users/matheusborges/github/php_backend/app/Models/TransactionCartegory.php on line 11
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Models\User;
+use App\Models\{User, Transaction};
 
 class TransactionCategory extends Model
 {

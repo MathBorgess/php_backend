@@ -2,16 +2,26 @@
 
 namespace App\Models;
 
-use App\Enums\TransactionTypeRequestStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\TransactionCategory;
+
 
 class Transaction extends Model
 {
     protected $table = 'transactions';
     use HasApiTokens, HasFactory, Notifiable, HasUuids;
+    static function transactionTypes()
+    {
+        return [
+            "income",
+            "expense",
+        ];
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -22,11 +32,11 @@ class Transaction extends Model
         'name',
         'value',
         'type',
+        'category_id'
     ];
 
     protected $casts = [
         'value' => 'integer',
-        'type' => TransactionTypeRequestStatus::class,
     ];
 
     public function category(): BelongsTo
