@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Validation\Rule;
 use Illuminate\Http\{Request, Response};
+use App\Http\Requests\User\StoreUserRequest;
 use App\Services\UserService;
+use App\Models\Transaction;
 
 class UsersController extends Controller
 {
-    protected $service;
+    private $service;
     public function __construct(UserService $service)
     {
         $this->service = $service;
@@ -115,8 +117,9 @@ class UsersController extends Controller
      * )
      * @return User
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
+        // $request->validate();
         $request->validate([
             'fullname' => 'required|string',
             'email' => 'required|email|unique:users',
@@ -517,7 +520,7 @@ class UsersController extends Controller
      */
     public function transactions_show(string $user_id, string $category_id, string $id)
     {
-        $transaction = TransactionCategory::findOrFail($id);
+        $transaction = $this->service->getOneTransaction($category_id, $user_id, $id);
         return response()->json($transaction, 200);
     }
     /**

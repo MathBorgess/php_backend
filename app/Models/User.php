@@ -9,7 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Models\TransactionCategory;
+use App\Models\{TransactionCategory, Transaction};
 
 class User extends Authenticatable
 {
@@ -51,6 +51,11 @@ class User extends Authenticatable
     public function categories(): HasMany
     {
         return $this->hasMany(TransactionCategory::class);
+    }
+
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
     }
 
 }

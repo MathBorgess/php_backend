@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Transaction;
 use App\Services\TransactionService;
 use Illuminate\Http\{Request, Response};
 
 class TransactionController extends Controller
 {
-    protected $service;
+    private $service;
     public function __construct(TransactionService $service)
     {
         $this->service = $service;
