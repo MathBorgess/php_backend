@@ -8,7 +8,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Models\TransactionCategory;
+use App\Models\{TransactionCategory, User};
 
 
 class Transaction extends Model
@@ -32,7 +32,8 @@ class Transaction extends Model
         'name',
         'value',
         'type',
-        'category_id'
+        'category_id',
+        'user_id'
     ];
 
     protected $casts = [
@@ -44,4 +45,8 @@ class Transaction extends Model
         return $this->belongsTo(TransactionCategory::class);
     }
 
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

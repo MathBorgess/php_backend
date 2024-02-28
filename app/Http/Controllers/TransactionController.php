@@ -3,10 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transaction;
-use Illuminate\Http\Request;
+use App\Services\TransactionService;
+use Illuminate\Http\{Request, Response};
 
 class TransactionController extends Controller
 {
+    protected $service;
+    public function __construct(TransactionService $service)
+    {
+        $this->service = $service;
+    }
+
     /**
      * @OA\Get(
      *     path="/transactions",
@@ -66,37 +73,8 @@ class TransactionController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Transaction::query();
-
-        if ($request->has('transaction_name')) {
-            $query->where('name', 'like', '%' . $request->input('transaction_name') . '%');
-        }
-
-        if ($request->has('category_name')) {
-            $query->whereHas('category', function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->input('category_name') . '%');
-            });
-        }
-
-        if ($request->has('category_id')) {
-            $query->where('category_id', $request->input('category_id'));
-        }
-
-        if ($request->has('type')) {
-            $query->where('type', $request->input('type'));
-        }
-
-        if ($request->has('include_category') && $request->input('include_category') === 'true') {
-            $query->with(['category' => function ($query) {
-                $query->select('id','name');
-            }]);
-        }
-
-        $transactions = $query->get();
-        return [
-            "status" => 1,
-            "data" => $transactions
-        ];
+        $transactions = $this->service->getAll($request);
+        return response()->json($transactions, 200);
     }
     /**
      * @OA\Get(
@@ -131,10 +109,7 @@ class TransactionController extends Controller
      */
     public function show(string $id)
     {
-        $transaction = Transaction::findOrFail($id)->with('category');
-        return [
-            "status" => 1,
-            "data" => $transaction
-        ];
+        $transaction = $this->service->getById($id);
+        return response()->json($transaction, 200);
     }
 }

@@ -10,18 +10,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::resource('users', UsersController::class);
-Route::post('users/{id}/password', [UsersController::class, 'update_password']);
-
-Route::get('users/{user_id}/categories', [UsersController::class, 'categories_index']);
-Route::get('users/{user_id}/categories/{id}', [UsersController::class, 'categories_show']);
-Route::post('users/{user_id}/categories', [UsersController::class, 'categories_store']);
-Route::put('users/{user_id}/categories/{id}', [UsersController::class, 'categories_update']);
-Route::delete('users/{user_id}/categories/{id}', [UsersController::class, 'categories_destroy']);
-
-Route::get('users/{user_id}/categories/{id}/transactions', [UsersController::class, 'transactions_index']);
-Route::get('users/{user_id}/categories/{category_id}/transactions/{id}', [UsersController::class, 'transactions_show']);
-Route::post('users/{user_id}/categories/{category_id}/transactions', [UsersController::class, 'transactions_store']);
-Route::put('users/{user_id}/categories/{category_id}/transactions/{id}', [UsersController::class, 'transactions_update']);
-Route::delete('users/{user_id}/categories/{category_id}/transactions/{id}', [UsersController::class, 'transactions_destroy']);
-
+Route::controller(UsersController::class)->group(function () {
+    Route::post('/users/{id}/password', 'update_password');
+    Route::get('/users/{user_id}/categories', 'categories_index');
+    Route::get('/users/{user_id}/categories/{id}', 'categories_show');
+    Route::post('/users/{user_id}/categories', 'categories_store');
+    Route::put('/users/{user_id}/categories/{id}', 'categories_update');
+    Route::delete('/users/{user_id}/categories/{id}', 'categories_destroy');
+    Route::post('/users/{user_id}/categories/{category_id}/transactions', 'transactions_store');
+    Route::get('/users/{user_id}/categories/{id}/transactions', 'transactions_index');
+    Route::get('/users/{user_id}/categories/{category_id}/transactions/{id}', 'transactions_show');
+    Route::put('/users/{user_id}/categories/{category_id}/transactions/{id}', 'transactions_update');
+    Route::delete('/users/{user_id}/categories/{category_id}/transactions/{id}', 'transactions_destroy');
+});
 Route::resource('transactions', TransactionController::class);

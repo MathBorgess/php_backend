@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{TransactionCategory, Transaction, User};
 use Illuminate\Validation\Rule;
 use Illuminate\Http\{Request, Response};
+use App\Services\UserService;
 
 class UsersController extends Controller
 {
+    protected $service;
+    public function __construct(UserService $service)
+    {
+        $this->service = $service;
+    }
+
     /**
      * @OA\Get(
      *     path="/users",
@@ -26,14 +32,12 @@ class UsersController extends Controller
      *         description="Users retrieved successfully",
      *         @OA\JsonContent(
      *             type="object",
-     *             @OA\Property(property="users", type="array", @OA\Items(
-     *                 @OA\Property(property="id", type="string"),
-     *                 @OA\Property(property="fullname", type="string"),
-     *                 @OA\Property(property="email", type="string"),
-     *                 @OA\Property(property="cpf", type="string"),
-     *                 @OA\Property(property="created_at", type="string", format="date-time"),
-     *                 @OA\Property(property="updated_at", type="string", format="date-time")
-     *             ))
+     *             @OA\Property(property="id", type="string"),
+     *             @OA\Property(property="fullname", type="string"),
+     *             @OA\Property(property="email", type="string"),
+     *             @OA\Property(property="cpf", type="string"),
+     *             @OA\Property(property="created_at", type="string", format="date-time"),
+     *             @OA\Property(property="updated_at", type="string", format="date-time")
      *         )
      *     )
      *   )
@@ -41,8 +45,8 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $users = User::latest()->paginate(10);
-        return response()->json(["users" => $users], 200);
+        $users = $this->service->getAll();
+        return response()->json($users, 200);
     }
     /**
      * @OA\Get(
@@ -75,7 +79,7 @@ class UsersController extends Controller
      */
     public function show(string $id)
     {
-        $user = User::findOrFail($id);
+        $user = $this->service->getById($id);
         return response()->json($user, 200);
     }
 
@@ -119,12 +123,7 @@ class UsersController extends Controller
             'cpf' => 'required|string|unique:users',
             'password' => 'required|string'
         ]);
-        $user = User::create([
-            'fullname' => $request->fullname,
-            'email' => $request->email,
-            'cpf' => $request->cpf,
-            'password' => password_hash($request->password, PASSWORD_BCRYPT)
-        ]);
+        $user = $this->service->create($request);
         return response()->json($user, 201);
     }
 
@@ -168,17 +167,12 @@ class UsersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $user = User::findOrFail($id);
         $request->validate([
             'fullname' => 'required|string',
             'email' => 'required|email|unique:users,email,' . $user->id,
             'cpf' => 'required|string|unique:users,cpf,' . $user->id
         ]);
-        $user->update([
-            'fullname' => $request->fullname,
-            'email' => $request->email,
-            'cpf' => $request->cpf
-        ]);
+        $user = $this->service->update($id, $request);
         return response()->json($user, 200);
     }
 
@@ -211,13 +205,10 @@ class UsersController extends Controller
      */
     public function update_password(Request $request, $id)
     {
-        $user = User::findOrFail($id);
         $request->validate([
             'password' => 'required|string'
         ]);
-        $user->update([
-            'password' => password_hash($request->password, PASSWORD_BCRYPT)
-        ]);
+        $user = $this->service->update_password($id, $request->password);
         return response()->json(null, 204);
     }
 
@@ -242,8 +233,7 @@ class UsersController extends Controller
      */
     public function destroy($id)
     {
-        $user = User::findOrFail($id);
-        $user->delete();
+        $this->service->delete($id);
         return response()->json(null, 204);
     }
     /**
@@ -275,7 +265,7 @@ class UsersController extends Controller
      */
     public function categories_index(string $user_id)
     {
-        $categories = TransactionCategory::where('user_id', $user_id)->latest()->paginate(10);
+        $categories = $this->service->getCategories($user_id);
         return response()->json($categories, 200);
     }
 
@@ -316,7 +306,8 @@ class UsersController extends Controller
     */
     public function categories_show(string $user_id, string $id)
     {
-        $category = TransactionCategory::findOrFail($id);
+
+        $category = $this->service->getOneCategory($user_id, $id);
         return response()->json($category, 200);
     }
 
@@ -352,13 +343,7 @@ class UsersController extends Controller
         $request->validate([
             'name' => 'required|string'
         ]);
-        $user = User::findOrFail($user_id);
-        $category = TransactionCategory::create([
-            'name' => $request->name,
-            'user_id' => $user_id
-        ]);
-        $category->user()->associate($user);
-        $category->save();
+        $category = $this->service->createCategory($user_id, $request);
         return response()->json($category, 201);
     }
     /**
@@ -404,12 +389,8 @@ class UsersController extends Controller
             'name' => 'required|string',
             'user_id' => 'required|exists:users,id'
         ]);
-        $transactionCartegory = TransactionCategory::findOrFail($id);
-        $transactionCartegory->update([
-            'name' => $request->name,
-            'user_id' => $request->user_id
-        ]);
-        return response()->json($transactionCartegory, 200);
+        $category = $this->service->updateCategory($user_id,$id, $request);
+        return response()->json($category, 200);
     }
     /**
      * @OA\Delete(
@@ -443,8 +424,7 @@ class UsersController extends Controller
      */
     public function categories_destroy(string $user_id, string $id)
     {
-        $transactionCartegory = TransactionCategory::findOrFail($id);
-        $transactionCartegory->delete();
+        $this->service->deleteCategory($user_id, $id);
         return response()->json(null, 204);
     }
     /**
@@ -486,7 +466,7 @@ class UsersController extends Controller
      */
     public function transactions_index(string $user_id, string $id)
     {
-        $transactions = Transaction::where('category_id', $id)->latest()->paginate(10);
+        $transactions = $this->service->getTransactions($id, $user_id);
         return response()->json($transactions, 200);
     }
 
@@ -580,18 +560,10 @@ class UsersController extends Controller
         $request->validate([
             'name' => 'required|string',
             'value' => 'required|numeric',
-            'type' => Rule::in(Transaction::transactionTypes())
+            'type' => Rule::in(Transaction::transactionTypes()),
+            // 'category_id' => 'required|exists:transaction_categories,id',
         ]);
-
-        $category = TransactionCategory::findOrFail($category_id);
-        $transaction = Transaction::create([
-            'name' => $request->name,
-            'value' => $request->value,
-            'category_id' => $category->id,
-            'type' => $request->type
-        ]);
-        $transaction->category()->associate($category);
-        $transaction->save();
+        $transaction = $this->service->createTransaction($category_id, $user_id, $request);
         return response()->json($transaction, 201);
     }
     /**
@@ -645,15 +617,10 @@ class UsersController extends Controller
             'name' => 'required|string',
             'value' => 'required|numeric',
             'type' => Rule::in(Transaction::transactionTypes()),
-            'category_id' => 'required|exists:transaction_categories,id'
+            'category_id' => 'required|exists:transaction_categories,id',
+            'user_id' => 'required|exists:users,id'
         ]);
-        $transaction = Transaction::findOrFail($id);
-        $transaction->update([
-            'name' => $request->name,
-            'value' => $request->value,
-            'category_id' => $request->category_id,
-            'type' => $request->type
-        ]);
+        $transaction = $this->service->updateTransaction($category_id, $user_id, $id, $request);
         return response()->json($transaction, 200);
     }
     /**
@@ -693,10 +660,9 @@ class UsersController extends Controller
      *     )
      * )
     */
-    public function transactions_destroy(string $user_id, string $category_id, $id)
+    public function transactions_destroy(string $user_id, string $category_id, string $id)
     {
-        $transaction = Transaction::findOrFail($id);
-        $transaction->delete();
+        $this->service->deleteTransaction($category_id, $user_id, $id);
         return response()->json(null, 204);
     }
 }

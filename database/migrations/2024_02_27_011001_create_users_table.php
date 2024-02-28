@@ -32,9 +32,11 @@ return new class extends Migration {
             $table->string('name');
             $table->integer('value');
             $table->uuid('category_id')->index();
+            $table->uuid('user_id')->index();
             $table->timestamps();
 
             $table->foreign('category_id')->references('id')->on('transaction_categories')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
     /**
