@@ -3,8 +3,9 @@
 namespace App\Http\Requests\Users;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Models\Transaction;
 
-class StoreUserRequest extends FormRequest
+class StoreTransactionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +25,11 @@ class StoreUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'fullname' => 'required|string',
-            'email' => 'required|email|unique:users',
-            'cpf' => 'required|string|unique:users',
-            'password' => 'required|string'
+            'name' => 'required|string',
+            'value' => 'required|numeric',
+            'type' => Rule::in(Transaction::transactionTypes()),
+            'category_id' => 'required|exists:transaction_categories,id',
+            'user_id' => 'required|exists:users,id'
         ];
     }
 }

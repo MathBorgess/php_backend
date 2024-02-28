@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Validation\Rule;
 use Illuminate\Http\{Request, Response};
-use App\Http\Requests\User\StoreUserRequest;
+use App\Http\Requests\Users\{StoreUserRequest,
+    UpdatePasswordUserRequest,
+    UpdateUserRequest,
+    UpsertCategoriesRequest,
+    StoreTransactionRequest
+};
 use App\Services\UserService;
-use App\Models\Transaction;
 
 class UsersController extends Controller
 {
@@ -119,13 +123,7 @@ class UsersController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        // $request->validate();
-        $request->validate([
-            'fullname' => 'required|string',
-            'email' => 'required|email|unique:users',
-            'cpf' => 'required|string|unique:users',
-            'password' => 'required|string'
-        ]);
+        $request->validate();
         $user = $this->service->create($request);
         return response()->json($user, 201);
     }
@@ -168,13 +166,9 @@ class UsersController extends Controller
      * )
      * @return User
      */
-    public function update(Request $request, $id)
+    public function update(UpdatePasswordUserRequest $request, $id)
     {
-        $request->validate([
-            'fullname' => 'required|string',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'cpf' => 'required|string|unique:users,cpf,' . $user->id
-        ]);
+        $request->validate();
         $user = $this->service->update($id, $request);
         return response()->json($user, 200);
     }
@@ -206,11 +200,9 @@ class UsersController extends Controller
      * )
      * @return User
      */
-    public function update_password(Request $request, $id)
+    public function update_password(UpdateUserRequest $request, $id)
     {
-        $request->validate([
-            'password' => 'required|string'
-        ]);
+        $request->validate();
         $user = $this->service->update_password($id, $request->password);
         return response()->json(null, 204);
     }
@@ -309,7 +301,6 @@ class UsersController extends Controller
     */
     public function categories_show(string $user_id, string $id)
     {
-
         $category = $this->service->getOneCategory($user_id, $id);
         return response()->json($category, 200);
     }
@@ -341,11 +332,9 @@ class UsersController extends Controller
      * )
      *
      */
-    public function categories_store(string $user_id, Request $request)
+    public function categories_store(string $user_id, UpsertCategoriesRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string'
-        ]);
+        $request->validate();
         $category = $this->service->createCategory($user_id, $request);
         return response()->json($category, 201);
     }
@@ -386,12 +375,9 @@ class UsersController extends Controller
      *     )
      * )
      */
-    public function categories_update(string $user_id, string $id, Request $request)
+    public function categories_update(string $user_id, string $id, UpsertCategoriesRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string',
-            'user_id' => 'required|exists:users,id'
-        ]);
+        $request->validate();
         $category = $this->service->updateCategory($user_id,$id, $request);
         return response()->json($category, 200);
     }
@@ -558,14 +544,9 @@ class UsersController extends Controller
     *     )
     * )
      */
-    public function transactions_store(string $user_id, string $category_id, Request $request)
+    public function transactions_store(string $user_id, string $category_id, StoreTransactionRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string',
-            'value' => 'required|numeric',
-            'type' => Rule::in(Transaction::transactionTypes()),
-            // 'category_id' => 'required|exists:transaction_categories,id',
-        ]);
+        $request->validate();
         $transaction = $this->service->createTransaction($category_id, $user_id, $request);
         return response()->json($transaction, 201);
     }
@@ -614,15 +595,9 @@ class UsersController extends Controller
      *     )
      * )
      */
-    public function transactions_update(string $user_id, string $category_id, string $id, Request $request)
+    public function transactions_update(string $user_id, string $category_id, string $id, StoreTransactionRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string',
-            'value' => 'required|numeric',
-            'type' => Rule::in(Transaction::transactionTypes()),
-            'category_id' => 'required|exists:transaction_categories,id',
-            'user_id' => 'required|exists:users,id'
-        ]);
+        $request->validate();
         $transaction = $this->service->updateTransaction($category_id, $user_id, $id, $request);
         return response()->json($transaction, 200);
     }
