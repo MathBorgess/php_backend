@@ -86,9 +86,11 @@ class TransactionController extends Controller
             $query->where('type', $request->input('type'));
         }
 
-        $query->with(['category' => function ($query) {
-            $query->select('id','name');
-        }]);
+        if ($request->has('include_category') && $request->input('include_category') === 'true') {
+            $query->with(['category' => function ($query) {
+                $query->select('id','name');
+            }]);
+        }
 
         $transactions = $query->get();
         return [
@@ -99,7 +101,7 @@ class TransactionController extends Controller
     /**
      * @OA\Get(
      *     path="/transactions/{id}",
-     *     tags={"Users"},
+     *     tags={"Transactions"},
      *     summary="Get a transaction by ID",
      *     description="Returns a transaction by its ID",
      *     @OA\Parameter(

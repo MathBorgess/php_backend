@@ -46,7 +46,7 @@ class UsersController extends Controller
     }
     /**
      * @OA\Get(
-     *     path="/users",
+     *     path="/users/{id}",
      *    tags={"Users"},
      *    summary="returns an user",
      *   @OA\Parameter(
@@ -71,7 +71,7 @@ class UsersController extends Controller
      *         )
      *     )
      *   )
-     * @return User
+     *   )
      */
     public function show(string $id)
     {
@@ -130,7 +130,7 @@ class UsersController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/users",
+     *     path="/users/{id}",
      *     tags={"Users"},
      *     summary="Update an user",
      *     description="Update an user with required parameters: email, CPF, and full name",
@@ -184,7 +184,7 @@ class UsersController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/users",
+     *     path="/users/{id}/password",
      *     tags={"Users"},
      *     summary="Update an user`s password",
      *     description="Update an user`s password with required parameters: password",
@@ -223,7 +223,7 @@ class UsersController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/users",
+     *     path="/users/{id}",
      *     tags={"Users"},
      *     summary="delete alll user data",
      *     description="delete an user, its categories and transactions",
