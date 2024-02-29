@@ -1,0 +1,80 @@
+{
+    "taskDefinitionArn": "",
+    "containerDefinitions": [
+        {
+            "name": "",
+            "image": "",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "name": "tangolab-3000-tcp",
+                    "containerPort": 3000,
+                    "hostPort": 80,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "environment": [
+                { "name": "APP_NAME", "value": "Laravel" },
+                { "name": "APP_ENV", "value": "local" },
+                {
+                    "name": "APP_KEY",
+                    "value": "base64:XbuOQaDK+jHLKdadhz+7cdcx49v/ypd1IQs6IFVnwh8="
+                },
+                { "name": "APP_DEBUG", "value": true },
+                { "name": "APP_URL", "value": "http://localhost" },
+                { "name": "LOG_CHANNEL", "value": "stack" },
+                { "name": "LOG_LEVEL", "value": "debug" },
+                { "name": "DB_CONNECTION", "value": "pgsql" },
+                { "name": "DB_HOST", "value": "localhost" },
+                { "name": "DB_PORT", "value": 5432 },
+                { "name": "DB_DATABASE", "value": "laravel" },
+                { "name": "DB_USERNAME", "value": "root" },
+                { "name": "DB_PASSWORD", "value": "admin" },
+                { "name": "BROADCAST_DRIVER", "value": "log" },
+                { "name": "CACHE_DRIVER", "value": "file" },
+                { "name": "FILESYSTEM_DISK", "value": "local" },
+                { "name": "QUEUE_CONNECTION", "value": "sync" },
+                { "name": "SESSION_DRIVER", "value": "file" },
+                { "name": "SESSION_LIFETIME", "value": "120" },
+                { "name": "L5_SWAGGER_GENERATE_ALWAYS", "value": "true" },
+                {
+                    "name": "JWT_SECRET",
+                    "value": "ra4hroieNaztwjEClucSssFKBmOuY9qvuhPoH1PnWnM8zEuisMd4FJU5mfZxCeJp"
+                }
+            ],
+            "mountPoints": [],
+            "volumesFrom": []
+        }
+    ],
+    "family": "",
+    "taskRoleArn": "",
+    "executionRoleArn": "",
+    "revision": 1,
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.ecr-auth"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.task-iam-role"
+        },
+        {
+            "name": "ecs.capability.execution-role-ecr-pull"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": ["EC2"],
+    "requiresCompatibilities": ["EC2"],
+    "cpu": "",
+    "memory": "",
+    "registeredAt": "",
+    "registeredBy": "",
+    "tags": [
+        {
+            "key": "ecs:taskDefinition:createdFrom",
+            "value": "ecs-console-v2"
+        }
+    ]
+}

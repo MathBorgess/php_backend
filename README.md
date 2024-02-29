@@ -31,10 +31,14 @@ This project is a RESTful API developed in PHP. It aims to provide a backend sol
 
 Implementar o máximo das especificações que você conseguir.
 Implementar funcionalidades extras
+
+    -   Utilizar Docker e Docker Compose para subir e gerenciar a aplicação.
+    -   GitHub actions para linkar o repositório com a AWS de forma automática.
+    -   Sistema de autenticação JWT.
+    -   Uso da Clean Architecture.
+
 Documentação dos endpoints desenvolvidos, preferencialmente com um Swagger.
 Retorno com response code corretos.
-
-## ToDo
 
 ## Installation
 
