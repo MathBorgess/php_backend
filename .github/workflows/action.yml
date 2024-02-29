@@ -2,7 +2,7 @@
 name: Build and Push Laravel Container to ECR, and Deploy to ECS
 on:
   push:
-    branches: []
+    branches: ["release/*"]
 
 env:
   ECS_CLUSTER:
