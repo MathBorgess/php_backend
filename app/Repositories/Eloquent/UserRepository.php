@@ -16,7 +16,7 @@ class UserRepository implements UserRepositoryInterface
 
     public function getAll($data): array
     {
-        return $this->model::latest();
+        return $this->model::latest()->get()->toArray();
     }
 
     public function findById(string $id): object|null
@@ -52,13 +52,13 @@ class UserRepository implements UserRepositoryInterface
     public function getAllCategories(string $id): array
     {
         $user = $this->findById($id);
-        return $user->categories;
+        return $user->categories()->get()->toArray();
     }
 
     public function getCategory(string $id, string $category_id): array
     {
         $user = $this->findById($id);
-        return $user->categories->find($category_id);
+        return $user->categories->find($category_id)->get()->toArray();
     }
 
     public function createCategory(string $id, $data): object|null
@@ -82,7 +82,7 @@ class UserRepository implements UserRepositoryInterface
     public function getAllTransactions(string $id, string $category_id): array
     {
         $user = $this->findById($id);
-        return $user->categories()->find($category_id)->transactions();
+        return $user->categories()->find($category_id)->transactions()->get()->toArray();
     }
 
     public function getTransaction(string $id, string $category_id, string $transaction_id): object|null

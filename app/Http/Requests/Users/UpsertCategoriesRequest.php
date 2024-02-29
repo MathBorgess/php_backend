@@ -24,8 +24,7 @@ class UpsertCategoriesRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string',
-            'user_id' => 'required|exists:users,id'
+            'name' => 'required|string'
         ];
     }
 }

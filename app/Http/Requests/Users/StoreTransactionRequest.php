@@ -4,6 +4,7 @@ namespace App\Http\Requests\Users;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Transaction;
+use Illuminate\Validation\Rule;
 
 class StoreTransactionRequest extends FormRequest
 {
@@ -28,8 +29,6 @@ class StoreTransactionRequest extends FormRequest
             'name' => 'required|string',
             'value' => 'required|numeric',
             'type' => Rule::in(Transaction::transactionTypes()),
-            'category_id' => 'required|exists:transaction_categories,id',
-            'user_id' => 'required|exists:users,id'
         ];
     }
 }

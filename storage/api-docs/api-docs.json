@@ -15,7 +15,7 @@
                 "tags": [
                     "Auth"
                 ],
-                "description": "Returns user id if the credentials are valid",
+                "description": "Returns an user token if the credentials are valid",
                 "operationId": "565861f59755d8598716e3b5652fb655",
                 "requestBody": {
                     "required": true,
@@ -42,12 +42,12 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "User retrieved successfully",
+                        "description": "User'token retrieved successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "id": {
+                                        "token": {
                                             "type": "string"
                                         }
                                     },
@@ -66,17 +66,6 @@
                 ],
                 "description": "Returns user id if the credentials are valid",
                 "operationId": "717ec419df0b5ad5eb5cdddae3666f9e",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "user id",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -553,25 +542,14 @@
                 }
             }
         },
-        "/users/{user_id}/categories": {
+        "/users/categories": {
             "get": {
                 "tags": [
                     "Users"
                 ],
                 "summary": "Get all transaction categories of a user",
                 "description": "Returns a list of transaction categories for the specified user.",
-                "operationId": "7f3e73320de098452edbcee73fef1c58",
-                "parameters": [
-                    {
-                        "name": "user_id",
-                        "in": "path",
-                        "description": "ID of the user",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
+                "operationId": "adeaa1a4fe1b1cd9dc3ab8318c6e8d32",
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -594,7 +572,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
@@ -602,18 +585,7 @@
                 ],
                 "summary": "Create a new transaction category for a user",
                 "description": "Creates a new transaction category for the specified user.",
-                "operationId": "f7bbe017aedead8731566a313720d34e",
-                "parameters": [
-                    {
-                        "name": "user_id",
-                        "in": "path",
-                        "description": "ID of the user",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
+                "operationId": "3653bf14e444259efd0bc7bd1909c7d7",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -636,27 +608,23 @@
                     "201": {
                         "description": "Category created successfully"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/users/{user_id}/categories/{id}": {
+        "/users/categories/{id}": {
             "get": {
                 "tags": [
                     "Users"
                 ],
                 "summary": "Get a transaction category by ID",
                 "description": "Returns a transaction category by its ID for the specified user.",
-                "operationId": "c995724ff10bb74d83aef8e82f6535c5",
+                "operationId": "e36312efbb5db973ce9866d0ece13e3e",
                 "parameters": [
-                    {
-                        "name": "user_id",
-                        "in": "path",
-                        "description": "ID of the user",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
                     {
                         "name": "id",
                         "in": "path",
@@ -689,7 +657,12 @@
                     "404": {
                         "description": "Category not found"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "put": {
                 "tags": [
@@ -697,17 +670,8 @@
                 ],
                 "summary": "Update a transaction category of a user",
                 "description": "Updates the name of the specified transaction category for the specified user.",
-                "operationId": "75cfa23a9b5c5fec7c1aaa30e72bca08",
+                "operationId": "d80571253c43e08291795d0122d4bc6c",
                 "parameters": [
-                    {
-                        "name": "user_id",
-                        "in": "path",
-                        "description": "ID of the user",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
                     {
                         "name": "id",
                         "in": "path",
@@ -743,7 +707,12 @@
                     "404": {
                         "description": "Category not found"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "delete": {
                 "tags": [
@@ -751,17 +720,8 @@
                 ],
                 "summary": "Delete a transaction category of a user",
                 "description": "Deletes the specified transaction category for the specified user.",
-                "operationId": "eade5f064d184b29de8b920fb7f47ed6",
+                "operationId": "fbca7d26268de12d693d99814a8027e7",
                 "parameters": [
-                    {
-                        "name": "user_id",
-                        "in": "path",
-                        "description": "ID of the user",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
                     {
                         "name": "id",
                         "in": "path",
@@ -779,27 +739,23 @@
                     "404": {
                         "description": "Category not found"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/users/{user_id}/categories/{category_id}/transactions": {
+        "/users/categories/{category_id}/transactions": {
             "get": {
                 "tags": [
                     "Users"
                 ],
                 "summary": "Get all transactions of a category",
                 "description": "Returns a list of transactions for the specified category and user.",
-                "operationId": "65efa69495be489ce32902e8c6e4b78d",
+                "operationId": "4bdc62fdc3af7168bdb3476f6525e133",
                 "parameters": [
-                    {
-                        "name": "user_id",
-                        "in": "path",
-                        "description": "ID of the user",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
                     {
                         "name": "category_id",
                         "in": "path",
@@ -845,7 +801,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
@@ -853,17 +814,8 @@
                 ],
                 "summary": "Create a new transaction for a category",
                 "description": "Creates a new transaction for the specified category and user.",
-                "operationId": "3d36885a957af633915ff6a6288f12dc",
+                "operationId": "d01e0c659983ec39cc508f7f1ca2b862",
                 "parameters": [
-                    {
-                        "name": "user_id",
-                        "in": "path",
-                        "description": "ID of the user",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
                     {
                         "name": "category_id",
                         "in": "path",
@@ -908,27 +860,23 @@
                     "201": {
                         "description": "Transaction created successfully"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/users/{user_id}/categories/{category_id}/transactions/{id}": {
+        "/users/categories/{category_id}/transactions/{id}": {
             "get": {
                 "tags": [
                     "Users"
                 ],
                 "summary": "Get a transaction by ID",
                 "description": "Returns a transaction by its ID for the specified category and user.",
-                "operationId": "8fc0b5d613d1b4667c82e7e2bfc61b12",
+                "operationId": "ddf0b5384678071b382bb7ac35a2d2ae",
                 "parameters": [
-                    {
-                        "name": "user_id",
-                        "in": "path",
-                        "description": "ID of the user",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
                     {
                         "name": "category_id",
                         "in": "path",
@@ -983,7 +931,12 @@
                     "404": {
                         "description": "Transaction not found"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "put": {
                 "tags": [
@@ -991,17 +944,8 @@
                 ],
                 "summary": "Update a transaction of a category",
                 "description": "Updates a transaction for the specified category and user.",
-                "operationId": "d6c0253b0a183017fe4faf27ade70e49",
+                "operationId": "9594626a9a1a6e30196f5f482487bf1d",
                 "parameters": [
-                    {
-                        "name": "user_id",
-                        "in": "path",
-                        "description": "ID of the user",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
                     {
                         "name": "category_id",
                         "in": "path",
@@ -1053,7 +997,12 @@
                     "404": {
                         "description": "Transaction not found"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "delete": {
                 "tags": [
@@ -1061,17 +1010,8 @@
                 ],
                 "summary": "Delete a transaction of a category",
                 "description": "Deletes a transaction for the specified category and user.",
-                "operationId": "192d425edd8e53ab19c7b021c2f66452",
+                "operationId": "d078be0cc86647444463977f833846c4",
                 "parameters": [
-                    {
-                        "name": "user_id",
-                        "in": "path",
-                        "description": "ID of the user",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
                     {
                         "name": "category_id",
                         "in": "path",
@@ -1098,7 +1038,21 @@
                     "404": {
                         "description": "Transaction not found"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
             }
         }
     }

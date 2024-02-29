@@ -19,7 +19,7 @@ class AuthController extends Controller
      * @OA\Post(
      *    path="/auth",
      *    tags={"Auth"},
-     *    description="Returns user id if the credentials are valid",
+     *    description="Returns an user token if the credentials are valid",
      *    @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -30,10 +30,10 @@ class AuthController extends Controller
      *     ),
      *  @OA\Response(
      *         response=201,
-     *         description="User retrieved successfully",
+     *         description="User'token retrieved successfully",
      *         @OA\JsonContent(
      *             type="object",
-     *             @OA\Property(property="id", type="string"),
+     *             @OA\Property(property="token", type="string"),
      *         )
      *     )
      *   )
@@ -43,20 +43,13 @@ class AuthController extends Controller
     {
         $request->validated();
         $token = $this->service->login($request->email, $request->password);
-        return response()->json(["id"=>$token], 201);
+        return response()->json(["token"=>$token], 201);
     }
     /**
      * @OA\Post(
      *     path="/auth/{id}/password",
      *    tags={"Auth"},
      *     description="Returns user id if the credentials are valid",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         description="user id",
-     *         required=false,
-     *         @OA\Schema(type="string")
-     *     ),
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -74,10 +67,10 @@ class AuthController extends Controller
      *     )
      *   )
      */
-    public function update_password(string $id,UpdateCredentialsRequest $request)
+    public function update_password(UpdateCredentialsRequest $request)
     {
         $request->validate();
-        $this->service->update_credentials($id, $request->password);
+        $this->service->update_credentials($request->user->id, $request->password);
         return response()->json(null, 204);
     }
 }

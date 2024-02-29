@@ -14,9 +14,9 @@ class UserService
         $this->repository = $repository;
     }
 
-    public function getAll()
+    public function getAll($data)
     {
-        return $this->repository->getAll();
+        return $this->repository->getAll($data);
     }
 
     public function getById(string $id)

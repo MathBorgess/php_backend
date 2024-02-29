@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\UserRepositoryInterface;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthService
 {
@@ -17,7 +18,8 @@ class AuthService
     {
         $user = $this->repository->findByEmail($email);
         if ($user && password_verify($password, $user->password)) {
-            return $user->id;
+            $token = JWTAuth::fromUser($user);
+            return $token;
         }
         throw new Exception('Invalid credentials');
     }

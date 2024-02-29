@@ -8,22 +8,25 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::resource('users', UsersController::class);
-Route::controller(UsersController::class)->group(function () {
-    Route::get('/users/{user_id}/categories', 'categories_index');
-    Route::get('/users/{user_id}/categories/{id}', 'categories_show');
-    Route::post('/users/{user_id}/categories', 'categories_store');
-    Route::put('/users/{user_id}/categories/{id}', 'categories_update');
-    Route::delete('/users/{user_id}/categories/{id}', 'categories_destroy');
-    Route::post('/users/{user_id}/categories/{category_id}/transactions', 'transactions_store');
-    Route::get('/users/{user_id}/categories/{id}/transactions', 'transactions_index');
-    Route::get('/users/{user_id}/categories/{category_id}/transactions/{id}', 'transactions_show');
-    Route::put('/users/{user_id}/categories/{category_id}/transactions/{id}', 'transactions_update');
-    Route::delete('/users/{user_id}/categories/{category_id}/transactions/{id}', 'transactions_destroy');
+Route::controller(UsersController::class)->middleware('jwt')->group(function () {
+    Route::get('/users/categories', 'categories_index');
+    Route::post('/users/categories', 'categories_store');
+    Route::get('/users/categories/{id}', 'categories_show');
+    Route::put('/users/categories/{id}', 'categories_update');
+    Route::delete('/users/categories/{id}', 'categories_destroy');
+    Route::post('/users/categories/{category_id}/transactions', 'transactions_store');
+    Route::get('/users/categories/{id}/transactions', 'transactions_index');
+    Route::get('/users/categories/{category_id}/transactions/{id}', 'transactions_show');
+    Route::put('/users/categories/{category_id}/transactions/{id}', 'transactions_update');
+    Route::delete('/users/categories/{category_id}/transactions/{id}', 'transactions_destroy');
 });
+Route::resource('users', UsersController::class);
 Route::resource('transactions', TransactionController::class);
 Route::controller(AuthController::class)->group(function () {
     Route::post('auth', 'login');
-    Route::post('/auth/{id}/password', 'update_credentials');
+    Route::middleware('jwt')->post('/auth/password', 'update_credentials');
 });
 
+Route::fallback(function () {
+    return Response::json(["error" => 0], 404);
+});

@@ -49,9 +49,9 @@ class UsersController extends Controller
      *   )
      * @return User[]
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = $this->service->getAll();
+        $users = $this->service->getAll($request);
         return response()->json($users, 200);
     }
     /**
@@ -199,17 +199,11 @@ class UsersController extends Controller
     }
     /**
      * @OA\Get(
-     *     path="/users/{user_id}/categories",
+     *     path="/users/categories",
      *     tags={"Users"},
      *     summary="Get all transaction categories of a user",
      *     description="Returns a list of transaction categories for the specified user.",
-     *     @OA\Parameter(
-     *         name="user_id",
-     *         in="path",
-     *         description="ID of the user",
-     *         required=true,
-     *         @OA\Schema(type="string")
-     *     ),
+     *     security={{ "bearerAuth": {} }},
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
@@ -224,25 +218,19 @@ class UsersController extends Controller
      *     )
      * )
      */
-    public function categories_index(string $user_id)
+    public function categories_index(Request $request)
     {
-        $categories = $this->service->getCategories($user_id);
+        $categories = $this->service->getCategories($request->user()->id);
         return response()->json($categories, 200);
     }
 
     /**
     * @OA\Get(
-    *     path="/users/{user_id}/categories/{id}",
+    *     path="/users/categories/{id}",
     *     tags={"Users"},
     *     summary="Get a transaction category by ID",
     *     description="Returns a transaction category by its ID for the specified user.",
-    *     @OA\Parameter(
-    *         name="user_id",
-    *         in="path",
-    *         description="ID of the user",
-    *         required=true,
-    *         @OA\Schema(type="string")
-    *     ),
+    *     security={{ "bearerAuth": {} }},
     *     @OA\Parameter(
     *         name="id",
     *         in="path",
@@ -265,25 +253,20 @@ class UsersController extends Controller
     *     )
     * )
     */
-    public function categories_show(string $user_id, string $id)
+    public function categories_show(Request $request, string $id)
     {
-        $category = $this->service->getOneCategory($user_id, $id);
+        $category = $this->service->getOneCategory($request->user()->id, $id);
         return response()->json($category, 200);
     }
 
     /**
      * @OA\Post(
-     *     path="/users/{user_id}/categories",
+     *     path="/users/categories",
      *     tags={"Users"},
      *     summary="Create a new transaction category for a user",
      *     description="Creates a new transaction category for the specified user.",
-     *     @OA\Parameter(
-     *         name="user_id",
-     *         in="path",
-     *         description="ID of the user",
-     *         required=true,
-     *         @OA\Schema(type="string")
-     *     ),
+    *     security={{ "bearerAuth": {} }},
+     *     security={{ "bearerAuth": {} }},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -298,25 +281,19 @@ class UsersController extends Controller
      * )
      *
      */
-    public function categories_store(string $user_id, UpsertCategoriesRequest $request)
+    public function categories_store(UpsertCategoriesRequest $request)
     {
         $request->validated();
-        $category = $this->service->createCategory($user_id, $request);
+        $category = $this->service->createCategory($request->user()->id, $request);
         return response()->json($category, 201);
     }
     /**
      * @OA\Put(
-     *     path="/users/{user_id}/categories/{id}",
+     *     path="/users/categories/{id}",
      *     tags={"Users"},
      *     summary="Update a transaction category of a user",
      *     description="Updates the name of the specified transaction category for the specified user.",
-     *     @OA\Parameter(
-     *         name="user_id",
-     *         in="path",
-     *         description="ID of the user",
-     *         required=true,
-     *         @OA\Schema(type="string")
-     *     ),
+    *     security={{ "bearerAuth": {} }},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -341,25 +318,19 @@ class UsersController extends Controller
      *     )
      * )
      */
-    public function categories_update(string $user_id, string $id, UpsertCategoriesRequest $request)
+    public function categories_update(string $id, UpsertCategoriesRequest $request)
     {
         $request->validated();
-        $category = $this->service->updateCategory($user_id,$id, $request);
+        $category = $this->service->updateCategory($request->user()->id, $id, $request);
         return response()->json($category, 200);
     }
     /**
      * @OA\Delete(
-     *     path="/users/{user_id}/categories/{id}",
+     *     path="/users/categories/{id}",
      *     tags={"Users"},
      *     summary="Delete a transaction category of a user",
      *     description="Deletes the specified transaction category for the specified user.",
-     *     @OA\Parameter(
-     *         name="user_id",
-     *         in="path",
-     *         description="ID of the user",
-     *         required=true,
-     *         @OA\Schema(type="string")
-     *     ),
+    *     security={{ "bearerAuth": {} }},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -377,24 +348,18 @@ class UsersController extends Controller
      *     )
      * )
      */
-    public function categories_destroy(string $user_id, string $id)
+    public function categories_destroy(Request $request, string $id)
     {
-        $this->service->deleteCategory($user_id, $id);
+        $this->service->deleteCategory($request->user()->id, $id);
         return response()->json(null, 204);
     }
     /**
     * @OA\Get(
-    *     path="/users/{user_id}/categories/{category_id}/transactions",
+    *     path="/users/categories/{category_id}/transactions",
     *     tags={"Users"},
     *     summary="Get all transactions of a category",
     *     description="Returns a list of transactions for the specified category and user.",
-    *     @OA\Parameter(
-    *         name="user_id",
-    *         in="path",
-    *         description="ID of the user",
-    *         required=true,
-    *         @OA\Schema(type="string")
-    *     ),
+    *     security={{ "bearerAuth": {} }},
     *     @OA\Parameter(
     *         name="category_id",
     *         in="path",
@@ -419,25 +384,19 @@ class UsersController extends Controller
     *     )
     * )
      */
-    public function transactions_index(string $user_id, string $id)
+    public function transactions_index(Request $request, string $id)
     {
-        $transactions = $this->service->getTransactions($id, $user_id);
+        $transactions = $this->service->getTransactions($id, $request->user()->id);
         return response()->json($transactions, 200);
     }
 
     /**
      * @OA\Get(
-     *     path="/users/{user_id}/categories/{category_id}/transactions/{id}",
+     *     path="/users/categories/{category_id}/transactions/{id}",
      *     tags={"Users"},
      *     summary="Get a transaction by ID",
      *     description="Returns a transaction by its ID for the specified category and user.",
-     *     @OA\Parameter(
-     *         name="user_id",
-     *         in="path",
-     *         description="ID of the user",
-     *         required=true,
-     *         @OA\Schema(type="string")
-     *     ),
+    *     security={{ "bearerAuth": {} }},
      *     @OA\Parameter(
      *         name="category_id",
      *         in="path",
@@ -470,24 +429,18 @@ class UsersController extends Controller
      *     )
      * )
      */
-    public function transactions_show(string $user_id, string $category_id, string $id)
+    public function transactions_show(Request $request, string $category_id, string $id)
     {
-        $transaction = $this->service->getOneTransaction($category_id, $user_id, $id);
+        $transaction = $this->service->getOneTransaction($category_id, $request->user()->id, $id);
         return response()->json($transaction, 200);
     }
     /**
     * @OA\Post(
-    *     path="/users/{user_id}/categories/{category_id}/transactions",
+    *     path="/users/categories/{category_id}/transactions",
     *     tags={"Users"},
     *     summary="Create a new transaction for a category",
     *     description="Creates a new transaction for the specified category and user.",
-    *     @OA\Parameter(
-    *         name="user_id",
-    *         in="path",
-    *         description="ID of the user",
-    *         required=true,
-    *         @OA\Schema(type="string")
-    *     ),
+    *     security={{ "bearerAuth": {} }},
     *     @OA\Parameter(
     *         name="category_id",
     *         in="path",
@@ -510,25 +463,19 @@ class UsersController extends Controller
     *     )
     * )
      */
-    public function transactions_store(string $user_id, string $category_id, StoreTransactionRequest $request)
+    public function transactions_store(string $category_id, StoreTransactionRequest $request)
     {
         $request->validated();
-        $transaction = $this->service->createTransaction($category_id, $user_id, $request);
+        $transaction = $this->service->createTransaction($category_id, $request->user()->id, $request);
         return response()->json($transaction, 201);
     }
     /**
      * @OA\Put(
-     *     path="/users/{user_id}/categories/{category_id}/transactions/{id}",
+     *     path="/users/categories/{category_id}/transactions/{id}",
      *     tags={"Users"},
      *     summary="Update a transaction of a category",
      *     description="Updates a transaction for the specified category and user.",
-     *     @OA\Parameter(
-     *         name="user_id",
-     *         in="path",
-     *         description="ID of the user",
-     *         required=true,
-     *         @OA\Schema(type="string")
-     *     ),
+    *     security={{ "bearerAuth": {} }},
      *     @OA\Parameter(
      *         name="category_id",
      *         in="path",
@@ -561,25 +508,19 @@ class UsersController extends Controller
      *     )
      * )
      */
-    public function transactions_update(string $user_id, string $category_id, string $id, StoreTransactionRequest $request)
+    public function transactions_update(string $category_id, string $id, StoreTransactionRequest $request)
     {
         $request->validated();
-        $transaction = $this->service->updateTransaction($category_id, $user_id, $id, $request);
+        $transaction = $this->service->updateTransaction($category_id, $request->user()->id, $id, $request);
         return response()->json($transaction, 200);
     }
     /**
      * @OA\Delete(
-     *     path="/users/{user_id}/categories/{category_id}/transactions/{id}",
+     *     path="/users/categories/{category_id}/transactions/{id}",
      *     tags={"Users"},
      *     summary="Delete a transaction of a category",
      *     description="Deletes a transaction for the specified category and user.",
-     *     @OA\Parameter(
-     *         name="user_id",
-     *         in="path",
-     *         description="ID of the user",
-     *         required=true,
-     *         @OA\Schema(type="string")
-     *     ),
+    *     security={{ "bearerAuth": {} }},
      *     @OA\Parameter(
      *         name="category_id",
      *         in="path",
@@ -604,9 +545,9 @@ class UsersController extends Controller
      *     )
      * )
     */
-    public function transactions_destroy(string $user_id, string $category_id, string $id)
+    public function transactions_destroy(Request $request, string $category_id, string $id)
     {
-        $this->service->deleteTransaction($category_id, $user_id, $id);
+        $this->service->deleteTransaction($category_id, $request->user()->id, $id);
         return response()->json(null, 204);
     }
 }
