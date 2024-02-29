@@ -6,10 +6,114 @@
     },
     "servers": [
         {
-            "url": "localhost:8000/api"
+            "url": "http://localhost:8000/api"
         }
     ],
     "paths": {
+        "/auth": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "description": "Returns user id if the credentials are valid",
+                "operationId": "565861f59755d8598716e3b5652fb655",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/{id}/password": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "description": "Returns user id if the credentials are valid",
+                "operationId": "717ec419df0b5ad5eb5cdddae3666f9e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "user id",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "password"
+                                ],
+                                "properties": {
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/transactions": {
             "get": {
                 "tags": [
@@ -445,50 +549,6 @@
                 "responses": {
                     "204": {
                         "description": "Deleted"
-                    }
-                }
-            }
-        },
-        "/users/{id}/password": {
-            "post": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Update an user`s password",
-                "description": "Update an user`s password with required parameters: password",
-                "operationId": "0ac058855c2794f7cd8ff71de79e8e16",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "user id",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "password"
-                                ],
-                                "properties": {
-                                    "password": {
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "204": {
-                        "description": "User`s password updated successfully"
                     }
                 }
             }

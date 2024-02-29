@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Validation\Rule;
 use Illuminate\Http\{Request, Response};
-use App\Http\Requests\Users\{StoreUserRequest,
-    UpdatePasswordUserRequest,
+use App\Http\Requests\Users\{
+    StoreUserRequest,
     UpdateUserRequest,
     UpsertCategoriesRequest,
     StoreTransactionRequest
@@ -123,7 +123,7 @@ class UsersController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        $request->validate();
+        $request->validated();
         $user = $this->service->create($request);
         return response()->json($user, 201);
     }
@@ -166,45 +166,11 @@ class UsersController extends Controller
      * )
      * @return User
      */
-    public function update(UpdatePasswordUserRequest $request, $id)
+    public function update(UpdateUserRequest $request, $id)
     {
-        $request->validate();
+        $request->validated();
         $user = $this->service->update($id, $request);
         return response()->json($user, 200);
-    }
-
-    /**
-     * @OA\Post(
-     *     path="/users/{id}/password",
-     *     tags={"Users"},
-     *     summary="Update an user`s password",
-     *     description="Update an user`s password with required parameters: password",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         description="user id",
-     *         required=false,
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"password"},
-     *             @OA\Property(property="password", type="string")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=204,
-     *         description="User`s password updated successfully",
-     *     )
-     * )
-     * @return User
-     */
-    public function update_password(UpdateUserRequest $request, $id)
-    {
-        $request->validate();
-        $user = $this->service->update_password($id, $request->password);
-        return response()->json(null, 204);
     }
 
     /**
@@ -334,7 +300,7 @@ class UsersController extends Controller
      */
     public function categories_store(string $user_id, UpsertCategoriesRequest $request)
     {
-        $request->validate();
+        $request->validated();
         $category = $this->service->createCategory($user_id, $request);
         return response()->json($category, 201);
     }
@@ -377,7 +343,7 @@ class UsersController extends Controller
      */
     public function categories_update(string $user_id, string $id, UpsertCategoriesRequest $request)
     {
-        $request->validate();
+        $request->validated();
         $category = $this->service->updateCategory($user_id,$id, $request);
         return response()->json($category, 200);
     }
@@ -546,7 +512,7 @@ class UsersController extends Controller
      */
     public function transactions_store(string $user_id, string $category_id, StoreTransactionRequest $request)
     {
-        $request->validate();
+        $request->validated();
         $transaction = $this->service->createTransaction($category_id, $user_id, $request);
         return response()->json($transaction, 201);
     }
@@ -597,7 +563,7 @@ class UsersController extends Controller
      */
     public function transactions_update(string $user_id, string $category_id, string $id, StoreTransactionRequest $request)
     {
-        $request->validate();
+        $request->validated();
         $transaction = $this->service->updateTransaction($category_id, $user_id, $id, $request);
         return response()->json($transaction, 200);
     }

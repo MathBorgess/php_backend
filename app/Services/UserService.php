@@ -41,12 +41,6 @@ class UserService
             'cpf' => $request->cpf
         ]);
     }
-    public function update_password(string $id, string $password)
-    {
-        return $this->repository->update($id, [
-            'password' => password_hash($password, PASSWORD_BCRYPT)
-        ]);
-    }
 
     public function delete(string $id)
     {

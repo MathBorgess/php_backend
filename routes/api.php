@@ -1,7 +1,6 @@
 <?php
 
-use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\UsersController;
+use App\Http\Controllers\{TransactionController, AuthController, UsersController};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -11,7 +10,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::resource('users', UsersController::class);
 Route::controller(UsersController::class)->group(function () {
-    Route::post('/users/{id}/password', 'update_password');
     Route::get('/users/{user_id}/categories', 'categories_index');
     Route::get('/users/{user_id}/categories/{id}', 'categories_show');
     Route::post('/users/{user_id}/categories', 'categories_store');
@@ -24,3 +22,8 @@ Route::controller(UsersController::class)->group(function () {
     Route::delete('/users/{user_id}/categories/{category_id}/transactions/{id}', 'transactions_destroy');
 });
 Route::resource('transactions', TransactionController::class);
+Route::controller(AuthController::class)->group(function () {
+    Route::post('auth', 'login');
+    Route::post('/auth/{id}/password', 'update_credentials');
+});
+
