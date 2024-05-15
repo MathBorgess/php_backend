@@ -1,0 +1,18 @@
+<?php
+
+namespace App\Model\OAuth;
+
+class AccessTokens
+{
+    protected $table = 'oauth_access_tokens';
+
+    protected $fillable = [
+    'id',
+    'user_id',
+    'client_id',
+    'name',
+    'scopes',
+    'revoked',
+    'expires_at',
+    ];
+}
